@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "name": "Hasan Oso",
+    "title": "Hasan Oso — Yapay Zekâ Mühendisi",
+    "description": "Yeni Suriye için araçlar inşa eden bir yapay zekâ mühendisi. Halep ve Ankara'da.",
+    "ogAlt": "Hasan Oso — Yapay Zekâ Mühendisi"
+  },
+  "common": {
+    "location": "Halep · Ankara",
+    "tagline": "ENGINEER · BUILDER · RESEARCHER",
+    "skipToContent": "İçeriğe geç",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat",
+    "language": "Dil",
+    "viewWork": "Çalışmalar",
+    "viewProjects": "Çalışmalar",
+    "getInTouch": "İletişime geç",
+    "availableUponRequest": "Talep üzerine paylaşılır",
+    "scroll": "Aşağı",
+    "currentlyBuilding": "Şu an inşa ettiğim"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkında",
+    "projects": "Çalışmalar",
+    "contact": "İletişim"
+  },
+  "hero": {
+    "topbar": "Halep · Ankara",
+    "name": "Hasan Oso",
+    "subtitle": "Yeni Suriye için araçlar inşa eden bir yapay zekâ mühendisi.",
+    "intro": "Pratik yapay zekâ araçları inşa ediyorum — araştırma makaleleri için değil, gerçek insanlar için çalışan araçlar.",
+    "scrollHint": "Aşağı"
+  },
+  "about": {
+    "label": "Hakkında",
+    "title": "Hakkında",
+    "subtitle": "Kim olduğum ve ne inşa ettiğim üzerine kısa bir yazı.",
+    "narrative": "Halep'te doğdum. Bir şehrin değişmesini izleyerek büyüdüm. Bugün Ankara'dayım, OSTİM Teknik Üniversitesi Yapay Zekâ Mühendisliği'nin son sınıfındayım.\n\nPratik yapay zekâ inşa ediyorum — araştırma makaleleri için değil, gerçek insanlar için çalışan araçlar.\n\nŞu an inşa ettiğim şey Suriye için. Her şeyden çok yapıcılara ihtiyacı olan bir ülke için.",
+    "educationLabel": "Eğitim",
+    "educationSchool": "OSTİM Teknik Üniversitesi",
+    "educationProgram": "Yapay Zekâ Mühendisliği · Son sınıf",
+    "educationCity": "Ankara, Türkiye",
+    "languagesLabel": "Diller",
+    "languages": {
+      "arabic": "Arapça — Anadil",
+      "turkish": "Türkçe — İleri",
+      "english": "İngilizce — Öğreniyorum"
+    },
+    "nowLabel": "Bu ay",
+    "nowText": "NeuralCheck inşa ediyorum. İlk lansman Ağustos 2026, Azez.",
+    "toolsLabel": "Kullandığım araçlar",
+    "toolsLine": "Python · Kotlin · TypeScript · Firebase · Claude API · ve bir defter.",
+    "philosophyLabel": "Nasıl çalışırım",
+    "philosophyQuote": "Kimsenin kullanmadığı büyük bir şey yerine, gerçek insanlara yardım eden küçük bir şeyi yayımlamayı tercih ederim.",
+    "philosophyBody": "Dağıtım, teorinin öğretemediğini öğretir. Bir takım arkadaşının sabah ikide okuduğunda yazara sövmeyeceği bir kod yazmaya çalışıyorum."
+  },
+  "projects": {
+    "overline": "Seçilmiş çalışmalar",
+    "title": "Projeler",
+    "intro": "Yazılım inşa etme şeklimi şekillendiren üç proje. Her biri farklı bir hikâye anlatır — sorunlar, yaklaşımlar ve öğrendiklerim hakkında.",
+    "readMore": "Vaka çalışmasını oku",
+    "status": {
+      "active": "Geliştirme aşamasında",
+      "research": "Araştırma",
+      "academic": "Akademik",
+      "archived": "Arşivlendi"
+    }
+  },
+  "projectDetail": {
+    "backToProjects": "Tüm projeler",
+    "problem": "Sorun",
+    "approach": "Yaklaşım",
+    "outcome": "Sonuç",
+    "lessons": "Öğrendiklerim",
+    "builtWith": "Şu Araçlarla İnşa Edildi",
+    "repository": "Depo",
+    "privateRepo": "Bu depo özeldir",
+    "prev": "Önceki",
+    "next": "Sonraki"
+  },
+  "contact": {
+    "label": "İletişim",
+    "title": "Konuşalım",
+    "subtitle": "Yeni projeler, sohbetler veya fikirler için her zaman açığım. Bana en hızlı ulaşmanın yolu aşağıda.",
+    "details": {
+      "web": "Web",
+      "mail": "E-posta",
+      "tel": "Telefon",
+      "location": "Bulunduğum yer"
+    },
+    "values": {
+      "web": "hasanoso.pages.dev",
+      "mail": "osohasan.ai@gmail.com",
+      "tel": "+90 538 074 88 46",
+      "location": "Halep · Ankara"
+    },
+    "social": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "officeHoursLabel": "Çalışma saatleri",
+    "officeHours": "Pzt–Cum · 10:00 — 18:00 (UTC+3)",
+    "responseNote": "Genellikle 48 saat içinde yanıt veririm.",
+    "messageLabel": "Ya da bir mesaj gönder",
+    "form": {
+      "title": "Mesaj gönder",
+      "name": "Ad",
+      "namePlaceholder": "Adınız ve soyadınız",
+      "email": "E-posta",
+      "emailPlaceholder": "siz@ornek.com",
+      "subject": "Konu",
+      "subjectPlaceholder": "Kısaca, neyle ilgili?",
+      "message": "Mesaj",
+      "messagePlaceholder": "Birkaç cümle — bağlam, talep, zamanlama.",
+      "send": "Gönder",
+      "sending": "E-posta uygulamanız açılıyor…",
+      "successTitle": "Mesaj hazır",
+      "successBody": "Varsayılan e-posta uygulamanız taslakla birlikte açılmış olmalı. Açılmadıysa doğrudan osohasan.ai@gmail.com adresinden de ulaşabilirsiniz.",
+      "errors": {
+        "nameRequired": "Lütfen adınızı yazın.",
+        "emailRequired": "Lütfen e-posta adresinizi yazın.",
+        "emailInvalid": "Bu e-posta adresi geçerli görünmüyor.",
+        "messageRequired": "Lütfen bir mesaj yazın.",
+        "messageMin": "Mesaj en az 10 karakter olmalı.",
+        "messageMax": "Mesaj 500 karakterden uzun olmamalı."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Yapay Zekâ Mühendisi",
+    "location": "Halep · Ankara",
+    "pagesLabel": "Sayfalar",
+    "contactLabel": "İletişim",
+    "copyright": "© {year} Hasan Oso.",
+    "themeLine": "Ankara'da özenle yapıldı."
+  },
+  "notFound": {
+    "title": "Sayfa bulunamadı",
+    "body": "Aradığınız sayfa burada değil.",
+    "back": "Ana Sayfaya Dön"
+  }
+}

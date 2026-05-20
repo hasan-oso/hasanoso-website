@@ -1,0 +1,5 @@
+# Cloudflare Pages — server-side redirects
+# The root client redirect in app/page.tsx is the primary path.
+# These rules are a fallback for bots and no-JS clients.
+
+/_next/* /_next/:splat 200

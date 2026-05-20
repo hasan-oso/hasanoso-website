@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "name": "Hasan Oso",
+    "title": "Hasan Oso — AI Engineer",
+    "description": "AI Engineer building tools for the new Syria. Based in Aleppo and Ankara.",
+    "ogAlt": "Hasan Oso — AI Engineer"
+  },
+  "common": {
+    "location": "Aleppo · Ankara",
+    "tagline": "ENGINEER · BUILDER · RESEARCHER",
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "viewWork": "View work",
+    "viewProjects": "View work",
+    "getInTouch": "Get in touch",
+    "availableUponRequest": "Available on request",
+    "scroll": "Scroll",
+    "currentlyBuilding": "Currently building"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "projects": "Work",
+    "contact": "Contact"
+  },
+  "hero": {
+    "topbar": "Aleppo · Ankara",
+    "name": "Hasan Oso",
+    "subtitle": "AI Engineer building tools for the new Syria.",
+    "intro": "I build practical AI — tools that work for real people, not just research papers.",
+    "scrollHint": "Scroll"
+  },
+  "about": {
+    "label": "About",
+    "title": "About",
+    "subtitle": "A short essay about who I am and what I am building.",
+    "narrative": "I was born in Aleppo. I grew up watching a city change. Today I am in Ankara, in my final year of AI Engineering at OSTİM Technical University.\n\nI build practical AI — tools that work for real people, not just research papers.\n\nWhat I am building now is for Syria. A country that needs builders more than anything else.",
+    "educationLabel": "Education",
+    "educationSchool": "OSTİM Technical University",
+    "educationProgram": "AI Engineering · Final year",
+    "educationCity": "Ankara, Türkiye",
+    "languagesLabel": "Languages",
+    "languages": {
+      "arabic": "Arabic — Native",
+      "turkish": "Turkish — Fluent",
+      "english": "English — Learning"
+    },
+    "nowLabel": "Now",
+    "nowText": "Building NeuralCheck. First launch in Azaz, August 2026.",
+    "toolsLabel": "Tools I use",
+    "toolsLine": "Python · Kotlin · TypeScript · Firebase · Claude API · and a notebook.",
+    "philosophyLabel": "How I work",
+    "philosophyQuote": "I'd rather ship a small thing that helps real people than a big thing nobody uses.",
+    "philosophyBody": "Deployment teaches what theory cannot. I try to write code a teammate can read at 2 a.m. without cursing me."
+  },
+  "projects": {
+    "overline": "Selected work",
+    "title": "Projects",
+    "intro": "Three projects that shaped how I think about building software. Each tells a different story — about problems, approaches, and what I learned.",
+    "readMore": "Read case study",
+    "status": {
+      "active": "In Development",
+      "research": "Research",
+      "academic": "Academic",
+      "archived": "Archived"
+    }
+  },
+  "projectDetail": {
+    "backToProjects": "All projects",
+    "problem": "The Problem",
+    "approach": "The Approach",
+    "outcome": "The Outcome",
+    "lessons": "What I Learned",
+    "builtWith": "Built With",
+    "repository": "Repository",
+    "privateRepo": "This repository is private",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "contact": {
+    "label": "Contact",
+    "title": "Let's talk",
+    "subtitle": "I'm always interested in new projects, conversations, or ideas. The fastest way to reach me is below.",
+    "details": {
+      "web": "Web",
+      "mail": "Email",
+      "tel": "Phone",
+      "location": "Based in"
+    },
+    "values": {
+      "web": "hasanoso.pages.dev",
+      "mail": "osohasan.ai@gmail.com",
+      "tel": "+90 538 074 88 46",
+      "location": "Aleppo · Ankara"
+    },
+    "social": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "officeHoursLabel": "Office hours",
+    "officeHours": "Mon–Fri · 10:00 — 18:00 (UTC+3)",
+    "responseNote": "I usually reply within 48 hours.",
+    "messageLabel": "Or send a message",
+    "form": {
+      "title": "Send a message",
+      "name": "Name",
+      "namePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Briefly, what is this about?",
+      "message": "Message",
+      "messagePlaceholder": "A few sentences — context, ask, timing.",
+      "send": "Send",
+      "sending": "Opening your mail client…",
+      "successTitle": "Message ready",
+      "successBody": "Your mail client should now be open with the message drafted. If nothing happens, you can email me directly at osohasan.ai@gmail.com.",
+      "errors": {
+        "nameRequired": "Please enter your name.",
+        "emailRequired": "Please enter your email.",
+        "emailInvalid": "That email address does not look right.",
+        "messageRequired": "Please write a message.",
+        "messageMin": "Message should be at least 10 characters.",
+        "messageMax": "Message should be under 500 characters."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "AI Engineer",
+    "location": "Aleppo · Ankara",
+    "pagesLabel": "Pages",
+    "contactLabel": "Contact",
+    "copyright": "© {year} Hasan Oso.",
+    "themeLine": "Made with care in Ankara."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you are looking for is not here.",
+    "back": "Return Home"
+  }
+}

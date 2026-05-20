@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm view *)",
+      "Bash(npm run *)",
+      "Read(//c/Users/Efendi.Tec/AppData/Local/Temp/claude/C--Users-Efendi-Tec-hasanoso-website/a28cca57-dee8-4852-9bea-8eccff6d6446/tasks/**)",
+      "Bash(curl -sI http://localhost:3000/en/)",
+      "Bash(curl -s http://localhost:3000/en/)",
+      "Bash(curl -s http://localhost:3000/ar/)",
+      "Bash(curl -s http://localhost:3000/tr/)",
+      "Bash(curl -s http://localhost:3000/en/projects/)",
+      "Bash(tasklist)",
+      "Bash(taskkill /F /IM node.exe /T)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.WorkingSet64 -gt 200MB } | Stop-Process -Force; \"killed large node procs\")",
+      "PowerShell(npm run build 2>&1)",
+      "Bash(xargs grep -l \"surface-navy\\\\|navy-light\\\\|navy-dark\\\\|cream-dark\\\\|font-arabic.*font-arabic\")"
+    ]
+  }
+}
