@@ -10,6 +10,31 @@ import {
 } from '@/lib/firebase/content';
 import { locales, localeNames, type Locale } from '@/i18n/settings';
 
+import enMessages from '@/i18n/messages/en.json';
+import arMessages from '@/i18n/messages/ar.json';
+import trMessages from '@/i18n/messages/tr.json';
+
+const defaultMessages: Record<Locale, Record<string, unknown>> = {
+  en: enMessages,
+  ar: arMessages,
+  tr: trMessages,
+};
+
+/** Extract a nested value from the JSON messages by dot path, e.g. "hero.subtitle" or "currently.items.one.title" */
+function getDefault(locale: Locale, section: string, field: string): string {
+  const msgs = defaultMessages[locale] as Record<string, unknown>;
+  const sec = msgs[section];
+  if (!sec || typeof sec !== 'object') return '';
+  // field could be flat like "title" or nested like "items.one.title"
+  const parts = field.split('.');
+  let current: unknown = sec;
+  for (const part of parts) {
+    if (!current || typeof current !== 'object') return '';
+    current = (current as Record<string, unknown>)[part];
+  }
+  return typeof current === 'string' ? current : '';
+}
+
 type Status = 'idle' | 'saving' | 'saved' | 'error';
 
 type SectionDef = {
@@ -321,11 +346,17 @@ export default function AdminContentPage() {
                     {section.fields.map((field) => {
                       const value = sec[field.key] ?? '';
                       const isArabic = activeLocale === 'ar';
+                      const defaultVal = getDefault(activeLocale, section.key, field.key);
                       return (
                         <label key={field.key} className="block">
                           <span className="block text-[10px] font-mono tracking-[0.3em] text-text-faint">
                             {field.label}
                           </span>
+                          {defaultVal && !value && (
+                            <span className="block mt-1 text-[10px] text-text-ghost truncate">
+                              الحالي: {defaultVal}
+                            </span>
+                          )}
                           {field.multiline ? (
                             <textarea
                               value={value}
@@ -339,7 +370,8 @@ export default function AdminContentPage() {
                               }
                               rows={3}
                               dir={isArabic ? 'rtl' : 'ltr'}
-                              className="mt-2 w-full resize-y rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core"
+                              placeholder={defaultVal}
+                              className="mt-2 w-full resize-y rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright placeholder:text-text-ghost/50 focus:outline-none focus:border-gold-core"
                             />
                           ) : (
                             <input
@@ -353,7 +385,8 @@ export default function AdminContentPage() {
                                 )
                               }
                               dir={isArabic ? 'rtl' : 'ltr'}
-                              className="mt-2 w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core"
+                              placeholder={defaultVal}
+                              className="mt-2 w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright placeholder:text-text-ghost/50 focus:outline-none focus:border-gold-core"
                             />
                           )}
                         </label>
