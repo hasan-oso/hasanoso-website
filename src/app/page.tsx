@@ -26,7 +26,7 @@ function detectLocale(): Locale {
   return defaultLocale;
 }
 
-export default function RootPage() {
+export default function RootRedirectPage() {
   useEffect(() => {
     const locale = detectLocale();
     document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; samesite=lax`;
@@ -42,19 +42,15 @@ export default function RootPage() {
         <style>{`
           body {
             margin: 0;
-            background: #0E1420;
-            color: #ECE8DD;
+            background: #0A0F1C;
+            color: #E8E4D9;
             font-family: Georgia, serif;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
           }
-          .wordmark {
-            font-size: 1.5rem;
-            letter-spacing: 0.05em;
-            color: #C9A961;
-          }
+          .wordmark { font-size: 1.5rem; letter-spacing: 0.05em; color: #C9A961; }
         `}</style>
       </head>
       <body>
@@ -62,6 +58,9 @@ export default function RootPage() {
         <noscript>
           <meta httpEquiv="refresh" content="0; url=/en/" />
           <p>
+            {/* Intentional native anchor — this content is only rendered when
+                JavaScript is disabled, so next/link's client routing wouldn't run. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/en/" style={{ color: '#C9A961' }}>Continue to site</a>
           </p>
         </noscript>

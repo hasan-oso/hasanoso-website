@@ -2,223 +2,151 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  Briefcase,
-  Wrench,
-  MessageSquare,
-  Eye,
-  ArrowRight,
-  type LucideIcon,
-} from 'lucide-react';
-import {
-  collection,
-  getCountFromServer,
-  query,
-  where,
-} from 'firebase/firestore';
-import { formatDistanceToNow } from 'date-fns';
-import { getFirebaseDb } from '@/lib/firebase/config';
-import { listRecentMessages } from '@/lib/firebase/messages';
-import type { AdminMessage } from '@/lib/types/admin';
-import { cn } from '@/lib/utils';
+import { AdminShell } from '@/components/admin/AdminShell';
+import { listMessages, type ContactMessage } from '@/lib/firebase/messages';
+import { projects } from '@/data/projects';
 
-type Stats = {
-  projects: number;
-  skills: number;
-  messages: number;
-  unread: number;
-};
-
-export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({
-    projects: 0,
-    skills: 0,
-    messages: 0,
-    unread: 0,
-  });
-  const [recent, setRecent] = useState<AdminMessage[]>([]);
+export default function AdminDashboardPage() {
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      const db = getFirebaseDb();
-      if (!db) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const [projectsSnap, skillsSnap, messagesSnap, unreadSnap, recentList] =
-          await Promise.all([
-            getCountFromServer(collection(db, 'projects')),
-            getCountFromServer(collection(db, 'skills')),
-            getCountFromServer(collection(db, 'messages')),
-            getCountFromServer(
-              query(collection(db, 'messages'), where('read', '==', false)),
-            ),
-            listRecentMessages(5),
-          ]);
-
-        if (!active) return;
-        setStats({
-          projects: projectsSnap.data().count,
-          skills: skillsSnap.data().count,
-          messages: messagesSnap.data().count,
-          unread: unreadSnap.data().count,
-        });
-        setRecent(recentList);
-      } catch (err) {
-        if (active) setError((err as Error).message);
-      } finally {
-        if (active) setLoading(false);
-      }
-    })();
+    let alive = true;
+    listMessages()
+      .then((m) => {
+        if (alive) setMessages(m);
+      })
+      .catch((err) => console.error('Failed to load messages', err))
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
     return () => {
-      active = false;
+      alive = false;
     };
   }, []);
 
+  const unread = messages.filter((m) => m.status === 'unread').length;
+
   return (
-    <div className="space-y-10">
-      <header>
-        <h1 className="serif-display text-3xl sm:text-4xl text-primary mb-2">
-          Welcome back
-        </h1>
-        <p className="text-secondary text-sm">
-          {"Here is what is happening with your site."}
+    <AdminShell>
+      <header className="border-b border-void-3 pb-6">
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
+          Dashboard
         </p>
+        <h1 className="mt-2 text-3xl font-display text-text-bright">
+          Welcome back.
+        </h1>
       </header>
 
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="mt-10 grid gap-6 md:grid-cols-3">
         <StatCard
-          label="Projects"
-          value={stats.projects}
-          icon={Briefcase}
-          href="/admin/projects"
-          loading={loading}
-        />
-        <StatCard
-          label="Skills"
-          value={stats.skills}
-          icon={Wrench}
-          href="/admin/skills"
-          loading={loading}
-        />
-        <StatCard
-          label="Messages"
-          value={stats.messages}
-          icon={MessageSquare}
+          label="Unread messages"
+          value={loading ? '—' : unread.toString()}
           href="/admin/messages"
-          loading={loading}
+          accent="gold"
         />
         <StatCard
-          label="Unread"
-          value={stats.unread}
-          icon={Eye}
-          href="/admin/messages?filter=unread"
-          highlight={stats.unread > 0}
-          loading={loading}
+          label="Total messages"
+          value={loading ? '—' : messages.length.toString()}
+          href="/admin/messages"
+          accent="neon"
+        />
+        <StatCard
+          label="Projects in build"
+          value={projects.length.toString()}
+          accent="violet"
         />
       </section>
 
-      <section className="bg-bg-elevated border border-border-subtle rounded-lg p-6">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="serif-display text-xl text-primary">
-            Recent messages
-          </h2>
-          <Link
-            href="/admin/messages"
-            className="text-xs font-mono uppercase tracking-widest text-gold hover:text-gold-warm inline-flex items-center gap-1.5"
-          >
-            View all
-            <ArrowRight size={12} aria-hidden="true" />
-          </Link>
-        </div>
-
-        {error ? (
-          <p className="text-rose-400 text-sm font-mono">
-            {`Failed to load: ${error}`}
-          </p>
-        ) : loading ? (
-          <p className="text-tertiary text-sm font-mono">Loading…</p>
-        ) : recent.length === 0 ? (
-          <p className="text-tertiary text-sm">No messages yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {recent.map((msg) => (
-              <li
-                key={msg.id}
-                className={cn(
-                  'p-4 bg-bg-subtle rounded-md border border-transparent transition-colors duration-150 hover:border-border-subtle',
-                  !msg.read && 'border-gold/30',
-                )}
-              >
-                <div className="flex items-start justify-between gap-3 mb-1">
-                  <div className="min-w-0">
-                    <div className="text-primary text-sm font-medium truncate">
-                      {msg.name}
-                    </div>
-                    <div className="text-xs text-tertiary font-mono keep-latin truncate">
-                      {msg.email}
-                    </div>
-                  </div>
-                  <div className="text-[11px] text-tertiary font-mono whitespace-nowrap keep-latin">
-                    {msg.createdAt
-                      ? formatDistanceToNow(msg.createdAt.toDate(), {
-                          addSuffix: true,
-                        })
-                      : '—'}
-                  </div>
+      <section className="mt-12">
+        <h2 className="text-sm font-mono uppercase tracking-[0.3em] text-gold-core/80">
+          Recent messages
+        </h2>
+        <ul className="mt-4 divide-y divide-void-3/60 border-t border-void-3/60">
+          {loading ? (
+            <li className="py-6 text-text-faint text-sm">Loading…</li>
+          ) : messages.length === 0 ? (
+            <li className="py-6 text-text-faint text-sm">
+              No messages yet — when a visitor submits the contact form it will
+              show up here.
+            </li>
+          ) : (
+            messages.slice(0, 5).map((m) => (
+              <li key={m.id} className="py-4">
+                <div className="flex items-baseline justify-between gap-4">
+                  <p className="text-text-bright text-sm keep-latin">
+                    {m.name}
+                  </p>
+                  <span
+                    className={[
+                      'text-[10px] font-mono uppercase tracking-[0.2em]',
+                      m.status === 'unread'
+                        ? 'text-gold-core'
+                        : 'text-text-ghost',
+                    ].join(' ')}
+                  >
+                    {m.status}
+                  </span>
                 </div>
-                <p className="text-secondary text-sm leading-relaxed mt-2 line-clamp-2">
-                  {msg.message}
+                <p className="mt-1 text-xs text-text-faint keep-latin">
+                  {m.email}
+                </p>
+                <p className="mt-2 text-sm text-text-muted line-clamp-2">
+                  {m.body}
                 </p>
               </li>
-            ))}
-          </ul>
-        )}
+            ))
+          )}
+        </ul>
+        {messages.length > 5 ? (
+          <Link
+            href="/admin/messages"
+            className="mt-4 inline-block text-xs font-mono uppercase tracking-[0.2em] text-text-faint hover:text-gold-core transition-colors"
+          >
+            See all →
+          </Link>
+        ) : null}
       </section>
-    </div>
+    </AdminShell>
   );
 }
 
 function StatCard({
   label,
   value,
-  icon: Icon,
   href,
-  highlight,
-  loading,
+  accent,
 }: {
   label: string;
-  value: number;
-  icon: LucideIcon;
-  href: string;
-  highlight?: boolean;
-  loading?: boolean;
+  value: string;
+  href?: string;
+  accent: 'gold' | 'neon' | 'violet';
 }) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        'block p-5 rounded-lg border transition-colors duration-200',
-        highlight
-          ? 'bg-gold/10 border-gold/40 hover:border-gold'
-          : 'bg-bg-elevated border-border-subtle hover:border-gold/30',
-      )}
-    >
-      <div className="flex items-center justify-between mb-3">
-        <Icon
-          size={16}
-          aria-hidden="true"
-          className={highlight ? 'text-gold' : 'text-tertiary'}
-        />
-      </div>
-      <div className="serif-display text-3xl text-primary tabular-nums leading-none">
-        {loading ? '—' : value}
-      </div>
-      <div className="text-xs text-secondary mt-1.5">{label}</div>
+  const border = {
+    gold: 'border-gold-core/40',
+    neon: 'border-neon-core/40',
+    violet: 'border-violet-core/40',
+  }[accent];
+  const text = {
+    gold: 'text-gold-core',
+    neon: 'text-neon-core',
+    violet: 'text-violet-core',
+  }[accent];
+
+  const inner = (
+    <div className={`rounded-md border ${border} bg-void-1/60 p-6`}>
+      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-text-faint">
+        {label}
+      </p>
+      <p className={`mt-3 text-3xl font-display ${text} keep-latin`}>{value}</p>
+    </div>
+  );
+
+  return href ? (
+    <Link href={href} className="block transition-opacity hover:opacity-90">
+      {inner}
     </Link>
+  ) : (
+    inner
   );
 }

@@ -1,83 +1,95 @@
 import {
-  addDoc,
   collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  limit,
-  orderBy,
-  query,
+  addDoc,
   serverTimestamp,
+  query,
+  orderBy,
+  getDocs,
+  doc,
   updateDoc,
-  where,
-  type QueryConstraint,
+  deleteDoc,
+  type Timestamp,
 } from 'firebase/firestore';
-import { getFirebaseDb } from './config';
-import type { AdminMessage, AdminMessageInput } from '@/lib/types/admin';
+import { getFirebaseDb, hasFirebaseConfig } from './config';
+
+export type MessageStatus = 'unread' | 'read' | 'archived';
+
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  body: string;
+  locale: string;
+  status: MessageStatus;
+  createdAt?: Timestamp | null;
+  userAgent?: string;
+};
+
+export type SubmitMessageInput = {
+  name: string;
+  email: string;
+  body: string;
+  locale: string;
+};
 
 const COLLECTION = 'messages';
 
-function db() {
-  const d = getFirebaseDb();
-  if (!d) throw new Error('Firestore is not configured.');
-  return d;
+/**
+ * Persists a contact-form submission to Firestore. Returns `'no-config'`
+ * when Firebase isn't configured so the UI can fall back to a mailto.
+ */
+export async function submitMessage(
+  input: SubmitMessageInput,
+): Promise<'ok' | 'no-config'> {
+  if (!hasFirebaseConfig()) return 'no-config';
+  const db = getFirebaseDb();
+  if (!db) return 'no-config';
+
+  await addDoc(collection(db, COLLECTION), {
+    name: input.name.slice(0, 200),
+    email: input.email.slice(0, 200),
+    body: input.body.slice(0, 5000),
+    locale: input.locale,
+    status: 'unread' satisfies MessageStatus,
+    createdAt: serverTimestamp(),
+    userAgent:
+      typeof navigator === 'undefined' ? '' : navigator.userAgent.slice(0, 300),
+  });
+  return 'ok';
 }
 
-function toMessage(id: string, data: Record<string, unknown>): AdminMessage {
-  return { id, ...(data as Omit<AdminMessage, 'id'>) };
+/** Admin-only: list messages newest first. */
+export async function listMessages(): Promise<ContactMessage[]> {
+  const db = getFirebaseDb();
+  if (!db) return [];
+  const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => {
+    const data = d.data();
+    return {
+      id: d.id,
+      name: String(data.name ?? ''),
+      email: String(data.email ?? ''),
+      body: String(data.body ?? ''),
+      locale: String(data.locale ?? 'en'),
+      status: (data.status as MessageStatus) ?? 'unread',
+      createdAt: (data.createdAt as Timestamp) ?? null,
+      userAgent: String(data.userAgent ?? ''),
+    };
+  });
 }
 
-export type MessageFilter = 'all' | 'unread' | 'archived';
-
-export async function listMessages(
-  filter: MessageFilter = 'all',
-  max = 100,
-): Promise<AdminMessage[]> {
-  const constraints: QueryConstraint[] = [orderBy('createdAt', 'desc'), limit(max)];
-  if (filter === 'unread') {
-    constraints.unshift(where('read', '==', false), where('archived', '==', false));
-  } else if (filter === 'archived') {
-    constraints.unshift(where('archived', '==', true));
-  }
-  const snap = await getDocs(query(collection(db(), COLLECTION), ...constraints));
-  return snap.docs.map((d) => toMessage(d.id, d.data()));
-}
-
-export async function listRecentMessages(
-  max = 5,
-): Promise<AdminMessage[]> {
-  const snap = await getDocs(
-    query(collection(db(), COLLECTION), orderBy('createdAt', 'desc'), limit(max)),
-  );
-  return snap.docs.map((d) => toMessage(d.id, d.data()));
-}
-
-export async function updateMessage(
+export async function updateMessageStatus(
   id: string,
-  patch: Partial<Pick<AdminMessage, 'read' | 'archived'>>,
+  status: MessageStatus,
 ): Promise<void> {
-  await updateDoc(doc(db(), COLLECTION, id), patch);
+  const db = getFirebaseDb();
+  if (!db) throw new Error('Firebase not configured.');
+  await updateDoc(doc(db, COLLECTION, id), { status });
 }
 
 export async function deleteMessage(id: string): Promise<void> {
-  await deleteDoc(doc(db(), COLLECTION, id));
-}
-
-/**
- * Public-facing: anyone can submit a message via the contact form.
- * Firestore rules must allow `create` on /messages/{id}.
- */
-export async function submitMessage(input: AdminMessageInput): Promise<string> {
-  const d = getFirebaseDb();
-  if (!d) throw new Error('Firestore is not configured.');
-  const userAgent =
-    typeof navigator !== 'undefined' ? navigator.userAgent : undefined;
-  const ref = await addDoc(collection(d, COLLECTION), {
-    ...input,
-    userAgent: input.userAgent ?? userAgent,
-    read: false,
-    archived: false,
-    createdAt: serverTimestamp(),
-  });
-  return ref.id;
+  const db = getFirebaseDb();
+  if (!db) throw new Error('Firebase not configured.');
+  await deleteDoc(doc(db, COLLECTION, id));
 }

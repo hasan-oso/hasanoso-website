@@ -1,26 +1,38 @@
 import type { MetadataRoute } from 'next';
 import { locales } from '@/i18n/settings';
+import { projectSlugs } from '@/data/projects';
 
-const BASE_URL = 'https://hasanoso.pages.dev';
+export const dynamic = 'force-static';
 
-const paths = ['', '/about', '/projects', '/contact'] as const;
+const SITE = 'https://hasanoso.pages.dev';
 
+/**
+ * Builds the sitemap from the static set of locale routes + every
+ * project detail page. Refreshed at build time, so it's always in sync
+ * with the deployed export.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const staticPaths = ['', 'about', 'work', 'contact'] as const;
+
   const entries: MetadataRoute.Sitemap = [];
 
   for (const locale of locales) {
-    for (const path of paths) {
+    for (const path of staticPaths) {
+      const url = path ? `${SITE}/${locale}/${path}/` : `${SITE}/${locale}/`;
       entries.push({
-        url: `${BASE_URL}/${locale}${path}/`,
+        url,
         lastModified: now,
-        changeFrequency: 'monthly',
-        priority: path === '' ? 1.0 : 0.7,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${BASE_URL}/${l}${path}/`]),
-          ),
-        },
+        changeFrequency: path === '' ? 'monthly' : 'yearly',
+        priority: path === '' ? 1 : 0.7,
+      });
+    }
+    for (const slug of projectSlugs()) {
+      entries.push({
+        url: `${SITE}/${locale}/work/${slug}/`,
+        lastModified: now,
+        changeFrequency: 'yearly',
+        priority: 0.6,
       });
     }
   }

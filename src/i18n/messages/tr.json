@@ -2,142 +2,154 @@
   "meta": {
     "name": "Hasan Oso",
     "title": "Hasan Oso — Yapay Zekâ Mühendisi",
-    "description": "Yeni Suriye için araçlar inşa eden bir yapay zekâ mühendisi. Halep ve Ankara'da.",
+    "description": "Yeni Suriye için araçlar geliştiren yapay zekâ mühendisi. Halep ve Ankara'da.",
     "ogAlt": "Hasan Oso — Yapay Zekâ Mühendisi"
   },
   "common": {
-    "location": "Halep · Ankara",
-    "tagline": "ENGINEER · BUILDER · RESEARCHER",
     "skipToContent": "İçeriğe geç",
     "openMenu": "Menüyü aç",
     "closeMenu": "Menüyü kapat",
     "language": "Dil",
-    "viewWork": "Çalışmalar",
-    "viewProjects": "Çalışmalar",
+    "viewWork": "Çalışmalarımı gör",
     "getInTouch": "İletişime geç",
-    "availableUponRequest": "Talep üzerine paylaşılır",
-    "scroll": "Aşağı",
-    "currentlyBuilding": "Şu an inşa ettiğim"
+    "readMore": "Devamını oku",
+    "viewProject": "Projeyi gör",
+    "back": "Geri",
+    "scroll": "Kaydır",
+    "loading": "Yükleniyor…",
+    "submitting": "Gönderiliyor…",
+    "sent": "Gönderildi. Kısa süre içinde yanıtlarım.",
+    "error": "Bir hata oluştu. Lütfen tekrar deneyin."
   },
   "nav": {
-    "home": "Ana Sayfa",
-    "about": "Hakkında",
-    "projects": "Çalışmalar",
+    "home": "Anasayfa",
+    "about": "Hakkımda",
+    "work": "Çalışmalar",
     "contact": "İletişim"
+  },
+  "footer": {
+    "tagline": "Yapay zekâ mühendisi. Halep · Ankara.",
+    "rights": "Tüm hakları saklıdır.",
+    "builtWith": "Özenle yapıldı.",
+    "email": "E-posta",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
   },
   "hero": {
     "topbar": "Halep · Ankara",
     "name": "Hasan Oso",
-    "subtitle": "Yeni Suriye için araçlar inşa eden bir yapay zekâ mühendisi.",
-    "intro": "Pratik yapay zekâ araçları inşa ediyorum — araştırma makaleleri için değil, gerçek insanlar için çalışan araçlar.",
-    "scrollHint": "Aşağı"
+    "subtitle": "Yeni Suriye için araçlar geliştiren bir yapay zekâ mühendisi.",
+    "intro": "Sadece araştırma makaleleri için değil, insanlar için çalışan pratik yapay zekâ araçları geliştiriyorum.",
+    "scrollHint": "Kaydır"
   },
-  "about": {
-    "label": "Hakkında",
-    "title": "Hakkında",
-    "subtitle": "Kim olduğum ve ne inşa ettiğim üzerine kısa bir yazı.",
-    "narrative": "Halep'te doğdum. Bir şehrin değişmesini izleyerek büyüdüm. Bugün Ankara'dayım, OSTİM Teknik Üniversitesi Yapay Zekâ Mühendisliği'nin son sınıfındayım.\n\nPratik yapay zekâ inşa ediyorum — araştırma makaleleri için değil, gerçek insanlar için çalışan araçlar.\n\nŞu an inşa ettiğim şey Suriye için. Her şeyden çok yapıcılara ihtiyacı olan bir ülke için.",
-    "educationLabel": "Eğitim",
-    "educationSchool": "OSTİM Teknik Üniversitesi",
-    "educationProgram": "Yapay Zekâ Mühendisliği · Son sınıf",
-    "educationCity": "Ankara, Türkiye",
-    "languagesLabel": "Diller",
-    "languages": {
-      "arabic": "Arapça — Anadil",
-      "turkish": "Türkçe — İleri",
-      "english": "İngilizce — Öğreniyorum"
-    },
-    "nowLabel": "Bu ay",
-    "nowText": "NeuralCheck inşa ediyorum. İlk lansman Ağustos 2026, Azez.",
-    "toolsLabel": "Kullandığım araçlar",
-    "toolsLine": "Python · Kotlin · TypeScript · Firebase · Claude API · ve bir defter.",
-    "philosophyLabel": "Nasıl çalışırım",
-    "philosophyQuote": "Kimsenin kullanmadığı büyük bir şey yerine, gerçek insanlara yardım eden küçük bir şeyi yayımlamayı tercih ederim.",
-    "philosophyBody": "Dağıtım, teorinin öğretemediğini öğretir. Bir takım arkadaşının sabah ikide okuduğunda yazara sövmeyeceği bir kod yazmaya çalışıyorum."
+  "manifesto": {
+    "label": "Manifesto",
+    "title": "İnsanını gözeten araçlar.",
+    "body": "Suriye yeniden inşa ediliyor, Türkiye yeniden kendini kuruyor; Arapça konuşan internet ise dili, kültürü ve kısıtları anlayan yazılımlara aç. Bunu ciddiye alan yapay zekâ araçları geliştiriyorum — yavaş ağlarda hızlı, sınırları konusunda dürüst, parlak olmadan önce faydalı.",
+    "signature": "— Hasan"
   },
-  "projects": {
-    "overline": "Seçilmiş çalışmalar",
-    "title": "Projeler",
-    "intro": "Yazılım inşa etme şeklimi şekillendiren üç proje. Her biri farklı bir hikâye anlatır — sorunlar, yaklaşımlar ve öğrendiklerim hakkında.",
-    "readMore": "Vaka çalışmasını oku",
-    "status": {
-      "active": "Geliştirme aşamasında",
-      "research": "Araştırma",
-      "academic": "Akademik",
-      "archived": "Arşivlendi"
-    }
-  },
-  "projectDetail": {
-    "backToProjects": "Tüm projeler",
-    "problem": "Sorun",
-    "approach": "Yaklaşım",
-    "outcome": "Sonuç",
-    "lessons": "Öğrendiklerim",
-    "builtWith": "Şu Araçlarla İnşa Edildi",
-    "repository": "Depo",
-    "privateRepo": "Bu depo özeldir",
-    "prev": "Önceki",
-    "next": "Sonraki"
-  },
-  "contact": {
-    "label": "İletişim",
-    "title": "Konuşalım",
-    "subtitle": "Yeni projeler, sohbetler veya fikirler için her zaman açığım. Bana en hızlı ulaşmanın yolu aşağıda.",
-    "details": {
-      "web": "Web",
-      "mail": "E-posta",
-      "tel": "Telefon",
-      "location": "Bulunduğum yer"
-    },
-    "values": {
-      "web": "hasanoso.pages.dev",
-      "mail": "osohasan.ai@gmail.com",
-      "tel": "+90 538 074 88 46",
-      "location": "Halep · Ankara"
-    },
-    "social": {
-      "linkedin": "LinkedIn",
-      "github": "GitHub"
-    },
-    "officeHoursLabel": "Çalışma saatleri",
-    "officeHours": "Pzt–Cum · 10:00 — 18:00 (UTC+3)",
-    "responseNote": "Genellikle 48 saat içinde yanıt veririm.",
-    "messageLabel": "Ya da bir mesaj gönder",
-    "form": {
-      "title": "Mesaj gönder",
-      "name": "Ad",
-      "namePlaceholder": "Adınız ve soyadınız",
-      "email": "E-posta",
-      "emailPlaceholder": "siz@ornek.com",
-      "subject": "Konu",
-      "subjectPlaceholder": "Kısaca, neyle ilgili?",
-      "message": "Mesaj",
-      "messagePlaceholder": "Birkaç cümle — bağlam, talep, zamanlama.",
-      "send": "Gönder",
-      "sending": "E-posta uygulamanız açılıyor…",
-      "successTitle": "Mesaj hazır",
-      "successBody": "Varsayılan e-posta uygulamanız taslakla birlikte açılmış olmalı. Açılmadıysa doğrudan osohasan.ai@gmail.com adresinden de ulaşabilirsiniz.",
-      "errors": {
-        "nameRequired": "Lütfen adınızı yazın.",
-        "emailRequired": "Lütfen e-posta adresinizi yazın.",
-        "emailInvalid": "Bu e-posta adresi geçerli görünmüyor.",
-        "messageRequired": "Lütfen bir mesaj yazın.",
-        "messageMin": "Mesaj en az 10 karakter olmalı.",
-        "messageMax": "Mesaj 500 karakterden uzun olmamalı."
+  "currently": {
+    "label": "Şu anda",
+    "title": "Şu sıralar üzerinde çalıştıklarım.",
+    "items": {
+      "one": {
+        "title": "Arapça öncelikli sivil veriler için RAG",
+        "summary": "Lehçeye ve iki dilli resmi belgelere göre ayarlanmış bir erişim sistemi.",
+        "status": "Devam ediyor"
+      },
+      "two": {
+        "title": "Cihaz içi LLM altyapısı",
+        "summary": "Yavaş telefonlar ve kesintili bağlantılar için küçük model araç setleri.",
+        "status": "Araştırma"
+      },
+      "three": {
+        "title": "Suriye yeniden yapılanma OS",
+        "summary": "STK'lar, gazeteciler ve vatandaşlar için açık bir veri katmanı.",
+        "status": "Tasarım"
       }
     }
   },
-  "footer": {
-    "tagline": "Yapay Zekâ Mühendisi",
-    "location": "Halep · Ankara",
-    "pagesLabel": "Sayfalar",
-    "contactLabel": "İletişim",
-    "copyright": "© {year} Hasan Oso.",
-    "themeLine": "Ankara'da özenle yapıldı."
+  "selected": {
+    "label": "Seçilmiş işler",
+    "title": "Yayına aldıklarım.",
+    "subtitle": "Son birkaç yıldan bir avuç proje. Geri kalanı arşivde.",
+    "viewAll": "Tüm işleri gör"
   },
-  "notFound": {
-    "title": "Sayfa bulunamadı",
-    "body": "Aradığınız sayfa burada değil.",
-    "back": "Ana Sayfaya Dön"
+  "stack": {
+    "label": "Yığın",
+    "title": "Sık başvurduğum araçlar.",
+    "groups": {
+      "lang": "Diller",
+      "ml": "ML / YZ",
+      "infra": "Altyapı",
+      "ui": "Arayüz"
+    }
+  },
+  "about": {
+    "label": "Hakkımda",
+    "title": "Merhaba — ben Hasan.",
+    "lede": "Halepliyim, Halep ile Ankara arasında yaşıyorum. Büyük platformların unuttuğu yerler için pratik yazılım geliştiriyorum.",
+    "sections": {
+      "background": {
+        "heading": "Geçmiş",
+        "body": "Halep'te çalışmayı, yayına almayı ve kalmayı kolaylaştırmayan yıllarda büyüdüm. Bizim için yazılım yapacak kimse olmadığı için yazılım yapmayı öğrendim. Bildiklerimin çoğunu kendim öğrendim, sonra onları kullanan insanlarla doğruladım."
+      },
+      "now": {
+        "heading": "Şimdi",
+        "body": "Vaktimi Ankara ile Halep arasında bölüyorum. Yılda az sayıda danışmanlık alıyorum, geri kalanı Arapça konuşan kullanıcılar için araçlara ayırıyorum — RAG, cihaz içi modeller, erişim hatları ve onları güvenilir kılan göz ardı edilen tesisat."
+      },
+      "approach": {
+        "heading": "Yaklaşım",
+        "body": "Önce insanla başla, modelle değil. Geniş ama çalışmayan bir şey yerine dar ama çalışan bir şey yayınla. Gecikme, maliyet, halüsinasyon ve dil verisinin sınırları konusunda dürüst ol. Bir sonraki mühendis sıfırdan başlamasın diye yaptığını belgele."
+      }
+    },
+    "timeline": {
+      "heading": "Zaman çizelgesi",
+      "items": {
+        "one": { "year": "2024", "text": "Bağımsız YZ danışmanlığı · Arapça öncelikli araçlar" },
+        "two": { "year": "2022", "text": "Halep–Ankara arası · uygulamalı ML araştırması" },
+        "three": { "year": "2020", "text": "Arapça'da ilk üretim LLM hattı" },
+        "four": { "year": "2018", "text": "Halka açık biçimde geliştirmeye, yayına almaya ve bozmaya başladım" }
+      }
+    }
+  },
+  "work": {
+    "label": "Çalışmalar",
+    "title": "Seçilmiş projeler.",
+    "subtitle": "Derlenmiş bir arşiv. Yenileri Arapça öncelikli YZ'ye yöneliyor; eskileri daha geniş.",
+    "all": "Tümü",
+    "empty": "Henüz bir şey yok — yakında tekrar bakın."
+  },
+  "projectDetail": {
+    "role": "Rol",
+    "year": "Yıl",
+    "stack": "Yığın",
+    "links": "Bağlantılar",
+    "live": "Canlı",
+    "repo": "Repo",
+    "backToWork": "Çalışmalara dön",
+    "summary": "Özet",
+    "challenge": "Zorluk",
+    "approach": "Yaklaşım",
+    "outcome": "Sonuç"
+  },
+  "contact": {
+    "label": "İletişim",
+    "title": "Konuşalım.",
+    "lede": "Arapça öncelikli bir şey üretiyorsanız, Suriye ile ilgili araçlar üzerinde çalışıyorsanız ya da yalnızca notlarınızı karşılaştırmak istiyorsanız — yazın.",
+    "form": {
+      "name": "Adınız",
+      "email": "E-posta",
+      "message": "Mesaj",
+      "submit": "Gönder",
+      "namePlaceholder": "Size nasıl hitap edeyim?",
+      "emailPlaceholder": "siz@ornek.com",
+      "messagePlaceholder": "Üzerinde çalıştığınız şeyden biraz bahsedin."
+    },
+    "direct": {
+      "label": "Ya da doğrudan yazın",
+      "email": "hello@hasanoso.com"
+    },
+    "notConfigured": "İletişim formu bu ortamda yapılandırılmadı — lütfen e-posta kullanın."
   }
 }

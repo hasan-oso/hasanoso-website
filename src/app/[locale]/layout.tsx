@@ -2,48 +2,61 @@ import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import {
-  Playfair_Display,
-  Inter,
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from 'next-intl/server';
+import {
+  Cormorant_Garamond,
+  Geist,
+  Geist_Mono,
   IBM_Plex_Sans_Arabic,
-  JetBrains_Mono,
+  Amiri,
 } from 'next/font/google';
 
 import '../globals.css';
 import { locales, localeDirection, type Locale } from '@/i18n/settings';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import { AppShell } from '@/components/layout/AppShell';
-import { PageTransition } from '@/components/layout/PageTransition';
-import { BrandPattern } from '@/components/effects/BrandPattern';
 import { cn } from '@/lib/utils';
+import { Header } from '@/components/chrome/Header';
+import { Footer } from '@/components/chrome/Footer';
+import { LiveContentProvider } from '@/components/live/LiveContentProvider';
+import { CursorGlow } from '@/components/fx/CursorGlow';
+import { SmoothScroll } from '@/components/fx/SmoothScroll';
+import { PageFadeIn } from '@/components/fx/PageFadeIn';
 
-const sans = Inter({
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
+
+const geistSans = Geist({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
-  variable: '--font-sans',
+  variable: '--font-geist-sans',
   display: 'swap',
 });
 
-const serif = Playfair_Display({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
-  variable: '--font-serif',
+  variable: '--font-geist-mono',
   display: 'swap',
 });
 
-const mono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono',
-  display: 'swap',
-});
-
-const arabic = IBM_Plex_Sans_Arabic({
+const ibmArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic', 'latin'],
   weight: ['400', '500', '600'],
-  variable: '--font-arabic',
+  variable: '--font-ibm-arabic',
+  display: 'swap',
+});
+
+const amiri = Amiri({
+  subsets: ['arabic', 'latin'],
+  weight: ['400', '700'],
+  variable: '--font-amiri',
   display: 'swap',
 });
 
@@ -52,13 +65,12 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  if (!locales.includes(locale as Locale)) {
-    return {};
-  }
+  const { locale } = await params;
+  if (!locales.includes(locale as Locale)) return {};
 
   const t = await getTranslations({ locale, namespace: 'meta' });
 
@@ -87,25 +99,22 @@ export async function generateMetadata({
       title: t('title'),
       description: t('description'),
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: { index: true, follow: true },
   };
 }
 
 export default async function LocaleLayout({
   children,
-  params: { locale },
+  params,
 }: {
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  if (!locales.includes(locale as Locale)) {
-    notFound();
-  }
+  const { locale } = await params;
 
-  unstable_setRequestLocale(locale);
+  if (!locales.includes(locale as Locale)) notFound();
+
+  setRequestLocale(locale);
 
   const messages = await getMessages();
   const tCommon = await getTranslations({ locale, namespace: 'common' });
@@ -113,10 +122,11 @@ export default async function LocaleLayout({
   const isArabic = locale === 'ar';
 
   const fontClasses = [
-    sans.variable,
-    serif.variable,
-    mono.variable,
-    arabic.variable,
+    cormorant.variable,
+    geistSans.variable,
+    geistMono.variable,
+    ibmArabic.variable,
+    amiri.variable,
   ].join(' ');
 
   return (
@@ -128,27 +138,27 @@ export default async function LocaleLayout({
     >
       <body
         className={cn(
-          'min-h-screen bg-bg-base text-primary',
+          'min-h-screen bg-void-1 text-text-primary antialiased',
           isArabic && 'body-arabic',
         )}
       >
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-gold focus:text-bg-base focus:px-4 focus:py-2 focus:rounded-sm focus:text-sm"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-gold-core focus:text-void-0 focus:px-4 focus:py-2 focus:rounded-sm focus:text-sm"
         >
           {tCommon('skipToContent')}
         </a>
         <NextIntlClientProvider messages={messages} locale={locale}>
-          <AppShell>
-            <BrandPattern />
+          <LiveContentProvider>
+            <PageFadeIn />
+            <CursorGlow />
+            <SmoothScroll />
             <Header locale={locale as Locale} />
-            <div className="relative z-10 flex min-h-screen flex-col pt-[var(--header-h)]">
-              <main id="main" className="flex-1">
-                <PageTransition>{children}</PageTransition>
-              </main>
-              <Footer locale={locale as Locale} />
-            </div>
-          </AppShell>
+            <main id="main" className="min-h-screen">
+              {children}
+            </main>
+            <Footer locale={locale as Locale} />
+          </LiveContentProvider>
         </NextIntlClientProvider>
       </body>
     </html>

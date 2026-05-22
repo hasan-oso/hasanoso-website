@@ -1,189 +1,163 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Save } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { AdminShell } from '@/components/admin/AdminShell';
 import {
-  AdminField,
-  adminInputClass,
-} from '@/components/admin/AdminField';
-import {
-  DEFAULT_SETTINGS,
-  getSettings,
-  saveSettings,
+  getSiteSettings,
+  saveSiteSettings,
+  type SiteSettings,
 } from '@/lib/firebase/settings';
-import type { AdminSettings } from '@/lib/types/admin';
 
-const schema = z.object({
-  email: z.string().trim().email('Must be a valid email'),
-  phone: z.string().trim().min(1, 'Required'),
-  location: z.string().trim().min(1, 'Required'),
-  github: z.string().trim().url('Must be a valid URL'),
-  linkedin: z.string().trim().url('Must be a valid URL'),
-  university: z.string().trim().min(1, 'Required'),
-  responseTime: z.coerce.number().int().min(1).max(720),
-});
+type Status = 'idle' | 'saving' | 'saved' | 'error';
 
-export default function SettingsPage() {
+export default function AdminSettingsPage() {
+  const [draft, setDraft] = useState<SiteSettings>({});
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm<AdminSettings>({
-    resolver: zodResolver(schema),
-    defaultValues: DEFAULT_SETTINGS,
-  });
+  const [status, setStatus] = useState<Status>('idle');
 
   useEffect(() => {
-    (async () => {
-      try {
-        const s = await getSettings();
-        reset(s);
-      } catch (err) {
-        toast.error((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [reset]);
+    let alive = true;
+    getSiteSettings()
+      .then((s) => {
+        if (alive && s) setDraft(s);
+      })
+      .catch((err) => console.error('Failed to load settings', err))
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
-  const onSubmit = async (data: AdminSettings) => {
-    setSubmitting(true);
+  async function handleSave() {
+    setStatus('saving');
     try {
-      await saveSettings(data);
-      toast.success('Settings saved.');
-      reset(data);
+      await saveSiteSettings(draft);
+      setStatus('saved');
+      setTimeout(() => setStatus('idle'), 2000);
     } catch (err) {
-      toast.error(`Save failed: ${(err as Error).message}`);
-    } finally {
-      setSubmitting(false);
+      console.error('Save failed', err);
+      setStatus('error');
     }
-  };
+  }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <header>
-        <h1 className="serif-display text-3xl text-primary mb-1">Settings</h1>
-        <p className="text-secondary text-sm">
-          Site-wide configuration. Used by the footer and contact page.
+    <AdminShell>
+      <header className="border-b border-void-3 pb-6">
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
+          Settings
         </p>
+        <h1 className="mt-2 text-3xl font-display text-text-bright">
+          Site settings
+        </h1>
       </header>
 
       {loading ? (
-        <p className="text-tertiary text-sm font-mono">Loading…</p>
+        <p className="mt-12 text-text-faint text-sm">Loading…</p>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <AdminField
-              label="Contact email"
-              htmlFor="email"
-              error={errors.email?.message}
-            >
-              <input
-                id="email"
-                type="email"
-                className={adminInputClass + ' keep-latin'}
-                {...register('email')}
-              />
-            </AdminField>
-            <AdminField
-              label="Contact phone"
-              htmlFor="phone"
-              error={errors.phone?.message}
-              hint="Include country code"
-            >
-              <input
-                id="phone"
-                className={adminInputClass + ' keep-latin'}
-                {...register('phone')}
-              />
-            </AdminField>
-          </div>
-          <AdminField
-            label="Location"
-            htmlFor="location"
-            error={errors.location?.message}
+        <div className="mt-10 space-y-10">
+          <Field
+            label="Maintenance mode"
+            description="When enabled, the public site shows a quiet 'under maintenance' notice."
           >
-            <input
-              id="location"
-              className={adminInputClass}
-              {...register('location')}
-            />
-          </AdminField>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <AdminField
-              label="GitHub URL"
-              htmlFor="github"
-              error={errors.github?.message}
-            >
+            <label className="inline-flex items-center gap-3 cursor-pointer">
               <input
-                id="github"
-                className={adminInputClass + ' keep-latin'}
-                {...register('github')}
+                type="checkbox"
+                checked={Boolean(draft.maintenance)}
+                onChange={(e) =>
+                  setDraft((p) => ({ ...p, maintenance: e.target.checked }))
+                }
+                className="h-4 w-4 accent-gold-core"
               />
-            </AdminField>
-            <AdminField
-              label="LinkedIn URL"
-              htmlFor="linkedin"
-              error={errors.linkedin?.message}
-            >
-              <input
-                id="linkedin"
-                className={adminInputClass + ' keep-latin'}
-                {...register('linkedin')}
-              />
-            </AdminField>
-          </div>
-          <AdminField
-            label="University"
-            htmlFor="university"
-            error={errors.university?.message}
-          >
-            <input
-              id="university"
-              className={adminInputClass}
-              {...register('university')}
-            />
-          </AdminField>
-          <AdminField
-            label="Response time (hours)"
-            htmlFor="responseTime"
-            error={errors.responseTime?.message}
-            hint="Shown to visitors after they send a message"
-          >
-            <input
-              id="responseTime"
-              type="number"
-              min={1}
-              max={720}
-              className={adminInputClass + ' w-32'}
-              {...register('responseTime')}
-            />
-          </AdminField>
-
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-subtle">
-            {isDirty ? (
-              <span className="text-tertiary text-xs font-mono">
-                Unsaved changes
+              <span className="text-sm text-text-muted">
+                {draft.maintenance ? 'On' : 'Off'}
               </span>
-            ) : null}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="inline-flex items-center gap-2 bg-gold text-bg-base font-medium px-5 py-2.5 rounded-md hover:bg-gold-warm transition-colors disabled:opacity-50 text-sm"
-            >
-              <Save size={14} aria-hidden="true" />
-              {submitting ? 'Saving…' : 'Save settings'}
-            </button>
-          </div>
-        </form>
+            </label>
+          </Field>
+
+          <Field
+            label="Contact email"
+            description="Override the email shown on the contact page."
+          >
+            <input
+              type="email"
+              value={draft.contactEmail ?? ''}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, contactEmail: e.target.value }))
+              }
+              placeholder="hello@hasanoso.com"
+              className="w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core keep-latin"
+            />
+          </Field>
+
+          <fieldset className="space-y-4">
+            <legend className="text-sm font-mono uppercase tracking-[0.3em] text-gold-core/80">
+              Social
+            </legend>
+            {(['github', 'linkedin', 'twitter'] as const).map((key) => (
+              <Field key={key} label={key} description={undefined}>
+                <input
+                  type="url"
+                  value={draft.social?.[key] ?? ''}
+                  onChange={(e) =>
+                    setDraft((p) => ({
+                      ...p,
+                      social: { ...p.social, [key]: e.target.value },
+                    }))
+                  }
+                  placeholder={`https://${key}.com/hasanoso`}
+                  className="w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core keep-latin"
+                />
+              </Field>
+            ))}
+          </fieldset>
+        </div>
       )}
+
+      <div className="mt-12 flex items-center gap-6 border-t border-void-3 pt-6">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={status === 'saving'}
+          className="rounded-sm border border-gold-core bg-gold-core px-6 py-2 text-sm text-void-0 hover:bg-gold-warm hover:border-gold-warm transition-colors disabled:opacity-50 cursor-pointer"
+        >
+          {status === 'saving' ? 'Saving…' : 'Save changes'}
+        </button>
+        <span
+          role="status"
+          aria-live="polite"
+          className="text-xs font-mono uppercase tracking-[0.2em]"
+        >
+          {status === 'saved' ? (
+            <span className="text-neon-core">Saved.</span>
+          ) : status === 'error' ? (
+            <span className="text-red-400">Save failed.</span>
+          ) : null}
+        </span>
+      </div>
+    </AdminShell>
+  );
+}
+
+function Field({
+  label,
+  description,
+  children,
+}: {
+  label: string;
+  description?: string | undefined;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-text-faint">
+        {label}
+      </p>
+      {description ? (
+        <p className="mt-1 text-xs text-text-ghost">{description}</p>
+      ) : null}
+      <div className="mt-3">{children}</div>
     </div>
   );
 }

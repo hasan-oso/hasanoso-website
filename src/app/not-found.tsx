@@ -9,8 +9,8 @@ export default function NotFound() {
         style={{
           margin: 0,
           minHeight: '100vh',
-          background: '#0E1420',
-          color: '#ECE8DD',
+          background: '#0A0F1C',
+          color: '#E8E4D9',
           fontFamily: 'Georgia, serif',
           display: 'flex',
           alignItems: 'center',

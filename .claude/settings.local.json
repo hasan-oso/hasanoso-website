@@ -15,7 +15,11 @@
       "Bash(taskkill /F /IM node.exe /T)",
       "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.WorkingSet64 -gt 200MB } | Stop-Process -Force; \"killed large node procs\")",
       "PowerShell(npm run build 2>&1)",
-      "Bash(xargs grep -l \"surface-navy\\\\|navy-light\\\\|navy-dark\\\\|cream-dark\\\\|font-arabic.*font-arabic\")"
+      "Bash(xargs grep -l \"surface-navy\\\\|navy-light\\\\|navy-dark\\\\|cream-dark\\\\|font-arabic.*font-arabic\")",
+      "WebFetch(domain:neuralcheck.net)",
+      "Bash(mkdir -p \"/c/Users/Efendi.Tec/hasanoso-website/src/app/[locale]/about\" \"/c/Users/Efendi.Tec/hasanoso-website/src/app/[locale]/work\" \"/c/Users/Efendi.Tec/hasanoso-website/src/app/[locale]/work/[slug]\" \"/c/Users/Efendi.Tec/hasanoso-website/src/app/[locale]/contact\")",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)"
     ]
   }
 }

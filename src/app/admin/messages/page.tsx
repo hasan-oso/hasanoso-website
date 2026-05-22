@@ -1,319 +1,193 @@
 'use client';
 
-import { Suspense, useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { formatDistanceToNow, format } from 'date-fns';
-import { toast } from 'react-hot-toast';
-import {
-  Archive,
-  ArchiveRestore,
-  Eye,
-  EyeOff,
-  Reply,
-  Search,
-  Trash2,
-  type LucideIcon,
-} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { AdminShell } from '@/components/admin/AdminShell';
 import {
   deleteMessage,
   listMessages,
-  type MessageFilter,
-  updateMessage,
+  updateMessageStatus,
+  type ContactMessage,
+  type MessageStatus,
 } from '@/lib/firebase/messages';
-import type { AdminMessage } from '@/lib/types/admin';
-import { cn } from '@/lib/utils';
 
-function MessagesInner() {
-  const params = useSearchParams();
-  const initialFilter = (params.get('filter') as MessageFilter) ?? 'all';
-  const [filter, setFilter] = useState<MessageFilter>(initialFilter);
-  const [query, setQuery] = useState('');
-  const [messages, setMessages] = useState<AdminMessage[]>([]);
+const statusOrder: MessageStatus[] = ['unread', 'read', 'archived'];
+
+export default function AdminMessagesPage() {
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<MessageStatus | 'all'>('all');
+  const [selected, setSelected] = useState<string | null>(null);
 
-  const load = useCallback(async (f: MessageFilter) => {
+  const load = useCallback(() => {
     setLoading(true);
-    try {
-      const list = await listMessages(f, 200);
-      setMessages(list);
-      setError(null);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
+    listMessages()
+      .then(setMessages)
+      .catch((err) => console.error('Failed to load messages', err))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    void load(filter);
-  }, [filter, load]);
+    load();
+  }, [load]);
 
-  const toggleRead = async (m: AdminMessage) => {
+  const filtered =
+    filter === 'all' ? messages : messages.filter((m) => m.status === filter);
+
+  const current = filtered.find((m) => m.id === selected) ?? null;
+
+  async function handleStatus(id: string, status: MessageStatus) {
     try {
-      await updateMessage(m.id, { read: !m.read });
+      await updateMessageStatus(id, status);
       setMessages((prev) =>
-        prev.map((x) => (x.id === m.id ? { ...x, read: !m.read } : x)),
+        prev.map((m) => (m.id === id ? { ...m, status } : m)),
       );
     } catch (err) {
-      toast.error((err as Error).message);
+      console.error('Failed to update status', err);
+      alert('Could not update status.');
     }
-  };
+  }
 
-  const toggleArchive = async (m: AdminMessage) => {
+  async function handleDelete(id: string) {
+    if (!confirm('Delete this message? This cannot be undone.')) return;
     try {
-      await updateMessage(m.id, { archived: !m.archived });
-      toast.success(m.archived ? 'Restored.' : 'Archived.');
-      setMessages((prev) =>
-        filter === 'all'
-          ? prev.map((x) =>
-              x.id === m.id ? { ...x, archived: !m.archived } : x,
-            )
-          : prev.filter((x) => x.id !== m.id),
-      );
+      await deleteMessage(id);
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+      if (selected === id) setSelected(null);
     } catch (err) {
-      toast.error((err as Error).message);
+      console.error('Failed to delete', err);
+      alert('Could not delete message.');
     }
-  };
-
-  const handleDelete = async (m: AdminMessage) => {
-    if (!window.confirm(`Delete message from ${m.name}?`)) return;
-    try {
-      await deleteMessage(m.id);
-      toast.success('Deleted.');
-      setMessages((prev) => prev.filter((x) => x.id !== m.id));
-    } catch (err) {
-      toast.error((err as Error).message);
-    }
-  };
-
-  const handleReply = (m: AdminMessage) => {
-    const subject = encodeURIComponent(
-      m.subject ? `Re: ${m.subject}` : 'Re: your message',
-    );
-    const body = encodeURIComponent(
-      `\n\n---\nOn ${m.createdAt ? format(m.createdAt.toDate(), 'PPP') : '—'} ${m.name} wrote:\n${m.message}`,
-    );
-    window.location.href = `mailto:${m.email}?subject=${subject}&body=${body}`;
-    if (!m.read) void toggleRead(m);
-  };
-
-  const filtered = messages.filter((m) => {
-    const q = query.trim().toLowerCase();
-    if (!q) return true;
-    return (
-      m.name.toLowerCase().includes(q) ||
-      m.email.toLowerCase().includes(q) ||
-      (m.subject ?? '').toLowerCase().includes(q) ||
-      m.message.toLowerCase().includes(q)
-    );
-  });
+  }
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="serif-display text-3xl text-primary mb-1">Messages</h1>
-          <p className="text-secondary text-sm">
-            Contact form submissions, newest first.
-          </p>
-        </div>
+    <AdminShell>
+      <header className="border-b border-void-3 pb-6">
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
+          Messages
+        </p>
+        <h1 className="mt-2 text-3xl font-display text-text-bright">
+          Contact submissions
+        </h1>
       </header>
 
-      <div className="flex items-center gap-3 flex-wrap">
-        <div role="tablist" className="inline-flex bg-bg-elevated border border-border-subtle rounded-md p-0.5">
-          {(['all', 'unread', 'archived'] as MessageFilter[]).map((f) => (
-            <button
-              key={f}
-              role="tab"
-              aria-selected={filter === f}
-              type="button"
-              onClick={() => setFilter(f)}
-              className={cn(
-                'px-3 py-1.5 rounded text-xs font-mono uppercase tracking-widest transition-colors',
-                filter === f
-                  ? 'bg-bg-subtle text-primary'
-                  : 'text-tertiary hover:text-primary',
-              )}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-
-        <div className="relative flex-1 min-w-[200px] max-w-md">
-          <Search
-            size={14}
-            className="absolute start-3 top-1/2 -translate-y-1/2 text-tertiary"
-            aria-hidden="true"
-          />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search name, email, subject…"
-            className="w-full bg-bg-elevated border border-border-subtle rounded-md ps-8 pe-3 py-2 text-primary placeholder:text-muted text-sm focus:border-gold focus:outline-none transition-colors"
-          />
-        </div>
+      <div className="mt-8 flex flex-wrap items-center gap-2">
+        {(['all', ...statusOrder] as const).map((f) => (
+          <button
+            key={f}
+            type="button"
+            onClick={() => setFilter(f)}
+            className={[
+              'px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] rounded-sm transition-colors cursor-pointer',
+              filter === f
+                ? 'bg-gold-core text-void-0'
+                : 'border border-void-3 text-text-muted hover:border-gold-core/60 hover:text-text-bright',
+            ].join(' ')}
+          >
+            {f}
+          </button>
+        ))}
       </div>
 
-      {error ? <p className="text-rose-400 text-sm font-mono">{error}</p> : null}
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_2fr]">
+        <ul className="divide-y divide-void-3/60 border border-void-3 rounded-md bg-void-1/40 max-h-[60vh] overflow-y-auto">
+          {loading ? (
+            <li className="p-6 text-text-faint text-sm">Loading…</li>
+          ) : filtered.length === 0 ? (
+            <li className="p-6 text-text-faint text-sm">No messages.</li>
+          ) : (
+            filtered.map((m) => (
+              <li key={m.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelected(m.id);
+                    if (m.status === 'unread') handleStatus(m.id, 'read');
+                  }}
+                  className={[
+                    'w-full text-left p-4 transition-colors cursor-pointer',
+                    selected === m.id ? 'bg-void-3/40' : 'hover:bg-void-3/20',
+                  ].join(' ')}
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="text-text-bright text-sm keep-latin">
+                      {m.name}
+                    </span>
+                    <span
+                      className={[
+                        'text-[10px] font-mono uppercase tracking-[0.2em]',
+                        m.status === 'unread'
+                          ? 'text-gold-core'
+                          : m.status === 'read'
+                            ? 'text-text-muted'
+                            : 'text-text-ghost',
+                      ].join(' ')}
+                    >
+                      {m.status}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[10px] font-mono text-text-ghost keep-latin">
+                    {m.email}
+                  </p>
+                  <p className="mt-2 text-xs text-text-muted line-clamp-2">
+                    {m.body}
+                  </p>
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
 
-      <div className="bg-bg-elevated border border-border-subtle rounded-lg overflow-hidden">
-        {loading ? (
-          <p className="px-6 py-10 text-center text-tertiary text-sm font-mono">
-            Loading…
-          </p>
-        ) : filtered.length === 0 ? (
-          <p className="px-6 py-10 text-center text-tertiary text-sm">
-            No messages match.
-          </p>
-        ) : (
-          <ul className="divide-y divide-border-subtle">
-            {filtered.map((m) => {
-              const isOpen = expanded === m.id;
-              return (
-                <li key={m.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setExpanded(isOpen ? null : m.id);
-                      if (!isOpen && !m.read) void toggleRead(m);
-                    }}
-                    className={cn(
-                      'w-full text-start px-5 py-4 flex items-start gap-4 transition-colors hover:bg-bg-subtle/40',
-                      !m.read && 'bg-gold/5',
-                    )}
-                  >
-                    {!m.read ? (
-                      <span
-                        className="mt-1.5 w-2 h-2 rounded-full bg-gold shrink-0"
-                        aria-label="Unread"
-                      />
-                    ) : (
-                      <span className="mt-1.5 w-2 h-2 shrink-0" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <span className="text-primary text-sm font-medium truncate">
-                          {m.name}
-                        </span>
-                        <span className="text-[11px] text-tertiary font-mono whitespace-nowrap keep-latin">
-                          {m.createdAt
-                            ? formatDistanceToNow(m.createdAt.toDate(), {
-                                addSuffix: true,
-                              })
-                            : '—'}
-                        </span>
-                      </div>
-                      <div className="text-xs text-tertiary font-mono keep-latin truncate">
-                        {m.email}
-                      </div>
-                      {m.subject ? (
-                        <div className="text-secondary text-sm mt-1 truncate">
-                          {m.subject}
-                        </div>
-                      ) : null}
-                      <p
-                        className={cn(
-                          'text-secondary text-sm mt-2 leading-relaxed',
-                          !isOpen && 'line-clamp-2',
-                        )}
-                      >
-                        {m.message}
-                      </p>
-                      {isOpen ? (
-                        <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
-                          <ActionButton
-                            icon={Reply}
-                            label="Reply"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleReply(m);
-                            }}
-                            tone="gold"
-                          />
-                          <ActionButton
-                            icon={m.read ? EyeOff : Eye}
-                            label={m.read ? 'Mark unread' : 'Mark read'}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void toggleRead(m);
-                            }}
-                          />
-                          <ActionButton
-                            icon={m.archived ? ArchiveRestore : Archive}
-                            label={m.archived ? 'Restore' : 'Archive'}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void toggleArchive(m);
-                            }}
-                          />
-                          <ActionButton
-                            icon={Trash2}
-                            label="Delete"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void handleDelete(m);
-                            }}
-                            tone="danger"
-                          />
-                          {m.createdAt ? (
-                            <span className="ms-auto text-tertiary font-mono keep-latin">
-                              {format(m.createdAt.toDate(), 'PPpp')}
-                            </span>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        <aside className="border border-void-3 rounded-md bg-void-1/40 p-6">
+          {current ? (
+            <article>
+              <div className="flex items-baseline justify-between">
+                <h2 className="text-xl font-display text-text-bright keep-latin">
+                  {current.name}
+                </h2>
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
+                  {current.locale.toUpperCase()}
+                </span>
+              </div>
+              <a
+                href={`mailto:${current.email}?subject=Re: your message`}
+                className="mt-1 inline-block text-sm text-neon-core hover:text-neon-soft transition-colors keep-latin"
+              >
+                {current.email}
+              </a>
+
+              <p className="mt-6 whitespace-pre-wrap text-text-primary text-pretty leading-relaxed">
+                {current.body}
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-2">
+                {statusOrder
+                  .filter((s) => s !== current.status)
+                  .map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => handleStatus(current.id, s)}
+                      className="px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] rounded-sm border border-void-3 text-text-muted hover:border-gold-core hover:text-gold-core transition-colors cursor-pointer"
+                    >
+                      Mark as {s}
+                    </button>
+                  ))}
+                <button
+                  type="button"
+                  onClick={() => handleDelete(current.id)}
+                  className="ml-auto px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] rounded-sm border border-red-500/40 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                >
+                  Delete
+                </button>
+              </div>
+            </article>
+          ) : (
+            <p className="text-text-faint text-sm">
+              Select a message to read it.
+            </p>
+          )}
+        </aside>
       </div>
-    </div>
-  );
-}
-
-function ActionButton({
-  icon: Icon,
-  label,
-  onClick,
-  tone,
-}: {
-  icon: LucideIcon;
-  label: string;
-  onClick: (e: React.MouseEvent) => void;
-  tone?: 'gold' | 'danger';
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'inline-flex items-center gap-1.5 font-mono uppercase tracking-widest transition-colors',
-        tone === 'gold'
-          ? 'text-gold hover:text-gold-warm'
-          : tone === 'danger'
-            ? 'text-tertiary hover:text-rose-400'
-            : 'text-tertiary hover:text-primary',
-      )}
-    >
-      <Icon size={12} aria-hidden="true" />
-      <span>{label}</span>
-    </button>
-  );
-}
-
-export default function MessagesPage() {
-  return (
-    <Suspense
-      fallback={<p className="text-tertiary text-sm font-mono">Loading…</p>}
-    >
-      <MessagesInner />
-    </Suspense>
+    </AdminShell>
   );
 }
