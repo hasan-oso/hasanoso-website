@@ -1,6 +1,5 @@
 import {
-  GoogleAuthProvider,
-  signInWithPopup,
+  signInWithEmailAndPassword as fbSignInEmail,
   signOut as fbSignOut,
   onAuthStateChanged,
   type User,
@@ -9,29 +8,23 @@ import {
 import { ADMIN_EMAIL, getFirebaseAuth } from './config';
 
 /**
- * Single-admin gate. Returns true only for the configured admin email
- * AND when Google has verified that address.
+ * Single-admin gate. Returns true only for the configured admin email.
  *
  * Firestore rules MUST also enforce this — never trust the client alone.
  */
 export function isAdmin(user: User | null | undefined): boolean {
   if (!user) return false;
   if (!user.email) return false;
-  if (!user.emailVerified) return false;
   return user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 }
 
 /**
- * Triggers Google sign-in popup. Throws if Firebase isn't configured.
- * Returns the signed-in user (which may or may not be the admin —
- * callers should immediately check `isAdmin(user)`).
+ * Signs in with email and password. Throws if Firebase isn't configured.
  */
-export async function signInWithGoogle(): Promise<User> {
+export async function signInWithEmail(email: string, password: string): Promise<User> {
   const auth = getFirebaseAuth();
   if (!auth) throw new Error('Firebase auth is not configured.');
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  const result = await signInWithPopup(auth, provider);
+  const result = await fbSignInEmail(auth, email, password);
   return result.user;
 }
 
@@ -56,3 +49,4 @@ export function subscribeToAuth(
   }
   return onAuthStateChanged(auth, callback);
 }
+

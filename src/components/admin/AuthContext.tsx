@@ -11,7 +11,7 @@ import {
 import type { User } from 'firebase/auth';
 import {
   isAdmin,
-  signInWithGoogle,
+  signInWithEmail,
   signOut,
   subscribeToAuth,
 } from '@/lib/firebase/auth';
@@ -23,7 +23,7 @@ type AuthState = {
   ready: boolean;
   isAdmin: boolean;
   configured: boolean;
-  signIn: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   error: string | null;
 };
@@ -59,10 +59,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAdmin: isAdmin(user),
       configured,
       error,
-      async signIn() {
+      async signIn(email: string, password: string) {
         setError(null);
         try {
-          await signInWithGoogle();
+          await signInWithEmail(email, password);
         } catch (e) {
           console.error('signIn failed', e);
           setError(e instanceof Error ? e.message : 'Sign-in failed.');
@@ -84,3 +84,4 @@ export function useAuth(): AuthState {
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
   return ctx;
 }
+
