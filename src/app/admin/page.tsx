@@ -31,28 +31,28 @@ export default function AdminDashboardPage() {
     <AdminShell>
       <header className="border-b border-void-3 pb-6">
         <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
-          Dashboard
+          لوحة التحكم
         </p>
         <h1 className="mt-2 text-3xl font-display text-text-bright">
-          Welcome back.
+          مرحباً بعودتك.
         </h1>
       </header>
 
       <section className="mt-10 grid gap-6 md:grid-cols-3">
         <StatCard
-          label="Unread messages"
+          label="رسائل غير مقروءة"
           value={loading ? '—' : unread.toString()}
           href="/admin/messages"
           accent="gold"
         />
         <StatCard
-          label="Total messages"
+          label="إجمالي الرسائل"
           value={loading ? '—' : messages.length.toString()}
           href="/admin/messages"
           accent="neon"
         />
         <StatCard
-          label="Projects in build"
+          label="المشاريع"
           value={projects.length.toString()}
           accent="violet"
         />
@@ -60,15 +60,14 @@ export default function AdminDashboardPage() {
 
       <section className="mt-12">
         <h2 className="text-sm font-mono uppercase tracking-[0.3em] text-gold-core/80">
-          Recent messages
+          آخر الرسائل
         </h2>
         <ul className="mt-4 divide-y divide-void-3/60 border-t border-void-3/60">
           {loading ? (
-            <li className="py-6 text-text-faint text-sm">Loading…</li>
+            <li className="py-6 text-text-faint text-sm">جارٍ التحميل…</li>
           ) : messages.length === 0 ? (
             <li className="py-6 text-text-faint text-sm">
-              No messages yet — when a visitor submits the contact form it will
-              show up here.
+              لا توجد رسائل بعد — عندما يرسل زائر من نموذج التواصل ستظهر هنا.
             </li>
           ) : (
             messages.slice(0, 5).map((m) => (
@@ -85,7 +84,7 @@ export default function AdminDashboardPage() {
                         : 'text-text-ghost',
                     ].join(' ')}
                   >
-                    {m.status}
+                    {m.status === 'unread' ? 'غير مقروءة' : m.status === 'read' ? 'مقروءة' : 'مؤرشفة'}
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-text-faint keep-latin">
@@ -103,7 +102,7 @@ export default function AdminDashboardPage() {
             href="/admin/messages"
             className="mt-4 inline-block text-xs font-mono uppercase tracking-[0.2em] text-text-faint hover:text-gold-core transition-colors"
           >
-            See all →
+            ← عرض الكل
           </Link>
         ) : null}
       </section>

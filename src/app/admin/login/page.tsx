@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/admin/AuthContext';
 
@@ -11,7 +12,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // If already authenticated (admin), bounce to dashboard
   useEffect(() => {
     if (auth.ready && auth.user && auth.isAdmin) {
       router.replace('/admin');
@@ -30,30 +30,27 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-void-0 px-6">
       <div className="w-full max-w-md rounded-md border border-void-3 bg-void-1/60 p-8">
         <p className="text-[10px] font-mono uppercase tracking-[0.4em] text-gold-core/80">
-          Admin
+          لوحة التحكم
         </p>
         <h1 className="mt-4 text-2xl font-display text-text-bright">
-          Sign in to continue
+          تسجيل الدخول
         </h1>
 
         {!auth.configured ? (
           <div className="mt-6 rounded-sm border border-red-500/40 bg-red-500/5 p-3 text-xs text-red-300">
-            Firebase isn&apos;t configured in this environment. Set
-            NEXT_PUBLIC_FIREBASE_* env vars and restart.
+            Firebase غير مُهيّأ. أضف متغيرات NEXT_PUBLIC_FIREBASE_* وأعد التشغيل.
           </div>
         ) : auth.user && !auth.isAdmin ? (
           <div className="mt-6 rounded-sm border border-red-500/40 bg-red-500/5 p-3 text-xs text-red-300">
-            Signed in as{' '}
-            <span className="text-text-bright keep-latin">
-              {auth.user.email}
-            </span>
-            . This account is not authorised.
+            مسجّل الدخول بـ{' '}
+            <span className="text-text-bright keep-latin">{auth.user.email}</span>.
+            هذا الحساب غير مصرّح.
             <button
               type="button"
               onClick={() => auth.signOut()}
               className="mt-3 block text-text-faint hover:text-text-bright transition-colors cursor-pointer"
             >
-              Sign out →
+              ← تسجيل خروج
             </button>
           </div>
         ) : (
@@ -63,7 +60,7 @@ export default function AdminLoginPage() {
                 htmlFor="email"
                 className="block text-[10px] font-mono uppercase tracking-[0.3em] text-text-faint mb-2"
               >
-                Email
+                البريد الإلكتروني
               </label>
               <input
                 id="email"
@@ -72,7 +69,8 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-sm border border-void-3 bg-void-0 px-4 py-3 text-sm text-text-bright placeholder:text-text-ghost focus:border-gold-core focus:outline-none transition-colors"
+                dir="ltr"
+                className="w-full rounded-sm border border-void-3 bg-void-0 px-4 py-3 text-sm text-text-bright placeholder:text-text-ghost focus:border-gold-core focus:outline-none transition-colors text-left"
                 placeholder="admin@example.com"
               />
             </div>
@@ -81,7 +79,7 @@ export default function AdminLoginPage() {
                 htmlFor="password"
                 className="block text-[10px] font-mono uppercase tracking-[0.3em] text-text-faint mb-2"
               >
-                Password
+                كلمة المرور
               </label>
               <input
                 id="password"
@@ -90,7 +88,8 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-sm border border-void-3 bg-void-0 px-4 py-3 text-sm text-text-bright placeholder:text-text-ghost focus:border-gold-core focus:outline-none transition-colors"
+                dir="ltr"
+                className="w-full rounded-sm border border-void-3 bg-void-0 px-4 py-3 text-sm text-text-bright placeholder:text-text-ghost focus:border-gold-core focus:outline-none transition-colors text-left"
                 placeholder="••••••••"
               />
             </div>
@@ -100,7 +99,7 @@ export default function AdminLoginPage() {
               disabled={!auth.configured || submitting}
               className="w-full rounded-sm border border-gold-core bg-gold-core text-void-0 py-3 text-sm font-medium tracking-wide hover:bg-gold-warm hover:border-gold-warm transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
-              {submitting ? 'Signing in…' : 'Sign in'}
+              {submitting ? 'جارٍ الدخول…' : 'تسجيل الدخول'}
             </button>
           </form>
         )}

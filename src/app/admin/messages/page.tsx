@@ -11,6 +11,12 @@ import {
 } from '@/lib/firebase/messages';
 
 const statusOrder: MessageStatus[] = ['unread', 'read', 'archived'];
+const statusLabels: Record<MessageStatus | 'all', string> = {
+  all: 'الكل',
+  unread: 'غير مقروءة',
+  read: 'مقروءة',
+  archived: 'مؤرشفة',
+};
 
 export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -43,19 +49,19 @@ export default function AdminMessagesPage() {
       );
     } catch (err) {
       console.error('Failed to update status', err);
-      alert('Could not update status.');
+      alert('تعذّر تحديث الحالة.');
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this message? This cannot be undone.')) return;
+    if (!confirm('حذف هذه الرسالة؟ لا يمكن التراجع.')) return;
     try {
       await deleteMessage(id);
       setMessages((prev) => prev.filter((m) => m.id !== id));
       if (selected === id) setSelected(null);
     } catch (err) {
       console.error('Failed to delete', err);
-      alert('Could not delete message.');
+      alert('تعذّر حذف الرسالة.');
     }
   }
 
@@ -63,10 +69,10 @@ export default function AdminMessagesPage() {
     <AdminShell>
       <header className="border-b border-void-3 pb-6">
         <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
-          Messages
+          الرسائل
         </p>
         <h1 className="mt-2 text-3xl font-display text-text-bright">
-          Contact submissions
+          رسائل التواصل
         </h1>
       </header>
 
@@ -77,13 +83,13 @@ export default function AdminMessagesPage() {
             type="button"
             onClick={() => setFilter(f)}
             className={[
-              'px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] rounded-sm transition-colors cursor-pointer',
+              'px-3 py-1.5 text-xs font-mono tracking-[0.2em] rounded-sm transition-colors cursor-pointer',
               filter === f
                 ? 'bg-gold-core text-void-0'
                 : 'border border-void-3 text-text-muted hover:border-gold-core/60 hover:text-text-bright',
             ].join(' ')}
           >
-            {f}
+            {statusLabels[f]}
           </button>
         ))}
       </div>
@@ -91,9 +97,9 @@ export default function AdminMessagesPage() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_2fr]">
         <ul className="divide-y divide-void-3/60 border border-void-3 rounded-md bg-void-1/40 max-h-[60vh] overflow-y-auto">
           {loading ? (
-            <li className="p-6 text-text-faint text-sm">Loading…</li>
+            <li className="p-6 text-text-faint text-sm">جارٍ التحميل…</li>
           ) : filtered.length === 0 ? (
-            <li className="p-6 text-text-faint text-sm">No messages.</li>
+            <li className="p-6 text-text-faint text-sm">لا توجد رسائل.</li>
           ) : (
             filtered.map((m) => (
               <li key={m.id}>
@@ -104,7 +110,7 @@ export default function AdminMessagesPage() {
                     if (m.status === 'unread') handleStatus(m.id, 'read');
                   }}
                   className={[
-                    'w-full text-left p-4 transition-colors cursor-pointer',
+                    'w-full text-right p-4 transition-colors cursor-pointer',
                     selected === m.id ? 'bg-void-3/40' : 'hover:bg-void-3/20',
                   ].join(' ')}
                 >
@@ -114,7 +120,7 @@ export default function AdminMessagesPage() {
                     </span>
                     <span
                       className={[
-                        'text-[10px] font-mono uppercase tracking-[0.2em]',
+                        'text-[10px] font-mono tracking-[0.2em]',
                         m.status === 'unread'
                           ? 'text-gold-core'
                           : m.status === 'read'
@@ -122,7 +128,7 @@ export default function AdminMessagesPage() {
                             : 'text-text-ghost',
                       ].join(' ')}
                     >
-                      {m.status}
+                      {statusLabels[m.status]}
                     </span>
                   </div>
                   <p className="mt-1 text-[10px] font-mono text-text-ghost keep-latin">
@@ -167,23 +173,23 @@ export default function AdminMessagesPage() {
                       key={s}
                       type="button"
                       onClick={() => handleStatus(current.id, s)}
-                      className="px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] rounded-sm border border-void-3 text-text-muted hover:border-gold-core hover:text-gold-core transition-colors cursor-pointer"
+                      className="px-3 py-1.5 text-xs font-mono tracking-[0.2em] rounded-sm border border-void-3 text-text-muted hover:border-gold-core hover:text-gold-core transition-colors cursor-pointer"
                     >
-                      Mark as {s}
+                      تحويل إلى {statusLabels[s]}
                     </button>
                   ))}
                 <button
                   type="button"
                   onClick={() => handleDelete(current.id)}
-                  className="ml-auto px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] rounded-sm border border-red-500/40 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                  className="mr-auto px-3 py-1.5 text-xs font-mono tracking-[0.2em] rounded-sm border border-red-500/40 text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
                 >
-                  Delete
+                  حذف
                 </button>
               </div>
             </article>
           ) : (
             <p className="text-text-faint text-sm">
-              Select a message to read it.
+              اختر رسالة لقراءتها.
             </p>
           )}
         </aside>

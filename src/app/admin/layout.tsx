@@ -7,7 +7,7 @@ import { AuthProvider } from '@/components/admin/AuthContext';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 
 const geistSans = Geist({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   weight: ['300', '400', '500', '600'],
   variable: '--font-geist-sans',
   display: 'swap',
@@ -22,21 +22,18 @@ const geistMono = Geist_Mono({
 
 /**
  * Admin section has its own html/body since it's outside the [locale] tree.
- * Always LTR, English-only chrome — Hasan is the only user.
- *
- * `robots: noindex, nofollow` here so the metadata pass tells crawlers
- * to skip even before they hit robots.txt. Belt + braces.
+ * Always RTL Arabic — Hasan is the only user.
  */
 export const metadata: Metadata = {
-  title: 'Admin · Hasan Oso',
+  title: 'لوحة التحكم · Hasan Oso',
   robots: { index: false, follow: false, nocache: true },
 };
 
 export default function AdminRootLayout({ children }: { children: ReactNode }) {
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang="ar"
+      dir="rtl"
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >

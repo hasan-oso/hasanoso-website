@@ -46,20 +46,20 @@ export default function AdminSettingsPage() {
     <AdminShell>
       <header className="border-b border-void-3 pb-6">
         <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold-core/80">
-          Settings
+          الإعدادات
         </p>
         <h1 className="mt-2 text-3xl font-display text-text-bright">
-          Site settings
+          إعدادات الموقع
         </h1>
       </header>
 
       {loading ? (
-        <p className="mt-12 text-text-faint text-sm">Loading…</p>
+        <p className="mt-12 text-text-faint text-sm">جارٍ التحميل…</p>
       ) : (
         <div className="mt-10 space-y-10">
           <Field
-            label="Maintenance mode"
-            description="When enabled, the public site shows a quiet 'under maintenance' notice."
+            label="وضع الصيانة"
+            description="عند التفعيل، يعرض الموقع رسالة «تحت الصيانة» للزوّار."
           >
             <label className="inline-flex items-center gap-3 cursor-pointer">
               <input
@@ -71,14 +71,14 @@ export default function AdminSettingsPage() {
                 className="h-4 w-4 accent-gold-core"
               />
               <span className="text-sm text-text-muted">
-                {draft.maintenance ? 'On' : 'Off'}
+                {draft.maintenance ? 'مفعّل' : 'معطّل'}
               </span>
             </label>
           </Field>
 
           <Field
-            label="Contact email"
-            description="Override the email shown on the contact page."
+            label="بريد التواصل"
+            description="تجاوز البريد المعروض في صفحة التواصل."
           >
             <input
               type="email"
@@ -87,13 +87,14 @@ export default function AdminSettingsPage() {
                 setDraft((p) => ({ ...p, contactEmail: e.target.value }))
               }
               placeholder="hello@hasanoso.com"
-              className="w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core keep-latin"
+              dir="ltr"
+              className="w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core keep-latin text-left"
             />
           </Field>
 
           <fieldset className="space-y-4">
             <legend className="text-sm font-mono uppercase tracking-[0.3em] text-gold-core/80">
-              Social
+              روابط التواصل الاجتماعي
             </legend>
             {(['github', 'linkedin', 'twitter'] as const).map((key) => (
               <Field key={key} label={key} description={undefined}>
@@ -107,7 +108,8 @@ export default function AdminSettingsPage() {
                     }))
                   }
                   placeholder={`https://${key}.com/hasanoso`}
-                  className="w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core keep-latin"
+                  dir="ltr"
+                  className="w-full rounded-sm border border-void-3 bg-void-0/60 px-3 py-2 text-sm text-text-bright focus:outline-none focus:border-gold-core keep-latin text-left"
                 />
               </Field>
             ))}
@@ -122,17 +124,17 @@ export default function AdminSettingsPage() {
           disabled={status === 'saving'}
           className="rounded-sm border border-gold-core bg-gold-core px-6 py-2 text-sm text-void-0 hover:bg-gold-warm hover:border-gold-warm transition-colors disabled:opacity-50 cursor-pointer"
         >
-          {status === 'saving' ? 'Saving…' : 'Save changes'}
+          {status === 'saving' ? 'جارٍ الحفظ…' : 'حفظ التغييرات'}
         </button>
         <span
           role="status"
           aria-live="polite"
-          className="text-xs font-mono uppercase tracking-[0.2em]"
+          className="text-xs font-mono tracking-[0.2em]"
         >
           {status === 'saved' ? (
-            <span className="text-neon-core">Saved.</span>
+            <span className="text-neon-core">تم الحفظ.</span>
           ) : status === 'error' ? (
-            <span className="text-red-400">Save failed.</span>
+            <span className="text-red-400">فشل الحفظ.</span>
           ) : null}
         </span>
       </div>

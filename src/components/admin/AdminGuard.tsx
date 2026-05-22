@@ -7,18 +7,12 @@ import { ADMIN_EMAIL } from '@/lib/firebase/config';
 
 /**
  * Route gate for everything under /admin (except /admin/login).
- *
- * - Shows a calm loading state while Firebase auth resolves.
- * - Redirects to /admin/login when there's no signed-in user.
- * - Refuses access (no redirect) when signed in but not the admin email,
- *   so the user can see *why* they were denied and sign out.
  */
 export function AdminGuard({ children }: { children: ReactNode }) {
   const auth = useAuth();
   const router = useRouter();
   const pathname = usePathname() ?? '';
 
-  // Bypass the guard on the login page itself.
   const onLoginPage = pathname === '/admin/login' || pathname === '/admin/login/';
 
   useEffect(() => {
@@ -50,8 +44,8 @@ export function AdminGuard({ children }: { children: ReactNode }) {
 function LoadingScreen() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-void-0">
-      <p className="text-text-faint text-xs font-mono uppercase tracking-[0.3em]">
-        Authenticating…
+      <p className="text-text-faint text-xs font-mono tracking-[0.3em]">
+        جارٍ التحقق…
       </p>
     </div>
   );
@@ -61,11 +55,11 @@ function ConfigErrorScreen() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-void-0 px-6">
       <div className="max-w-md rounded-md border border-red-500/40 bg-void-1 p-6 text-center">
-        <p className="text-red-400 text-xs font-mono uppercase tracking-[0.3em]">
-          Firebase not configured
+        <p className="text-red-400 text-xs font-mono tracking-[0.3em]">
+          Firebase غير مُهيّأ
         </p>
         <p className="mt-3 text-text-muted text-sm">
-          Set the NEXT_PUBLIC_FIREBASE_* env vars in .env.local and restart.
+          أضف متغيرات NEXT_PUBLIC_FIREBASE_* في .env.local وأعد التشغيل.
         </p>
       </div>
     </div>
@@ -77,21 +71,21 @@ function DeniedScreen({ email }: { email: string | null }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-void-0 px-6">
       <div className="max-w-md rounded-md border border-void-3 bg-void-1 p-6 text-center">
-        <p className="text-red-400 text-xs font-mono uppercase tracking-[0.3em]">
-          Access denied
+        <p className="text-red-400 text-xs font-mono tracking-[0.3em]">
+          الوصول مرفوض
         </p>
         <p className="mt-3 text-text-muted text-sm">
-          You're signed in as{' '}
-          <span className="text-text-bright keep-latin">{email ?? '—'}</span>,
-          but this dashboard is restricted to{' '}
+          مسجّل الدخول بـ{' '}
+          <span className="text-text-bright keep-latin">{email ?? '—'}</span>،
+          لكن لوحة التحكم مقيّدة بـ{' '}
           <span className="text-text-bright keep-latin">{ADMIN_EMAIL}</span>.
         </p>
         <button
           type="button"
           onClick={() => auth.signOut()}
-          className="mt-6 inline-flex items-center gap-2 rounded-sm border border-gold-core px-4 py-2 text-xs font-mono uppercase tracking-[0.2em] text-gold-core hover:bg-gold-core hover:text-void-0 transition-colors"
+          className="mt-6 inline-flex items-center gap-2 rounded-sm border border-gold-core px-4 py-2 text-xs font-mono tracking-[0.2em] text-gold-core hover:bg-gold-core hover:text-void-0 transition-colors"
         >
-          Sign out
+          تسجيل خروج
         </button>
       </div>
     </div>

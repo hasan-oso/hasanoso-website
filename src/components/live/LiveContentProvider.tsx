@@ -60,6 +60,9 @@ export function LiveContentProvider({ children }: { children: ReactNode }) {
 /**
  * Reads an override at `locale → section → field`. Returns null when no
  * override is set, so the caller can fall back to the build-time message.
+ *
+ * Path format: "section.field" where field can contain dots
+ * (e.g. "currently.items.one.title" → section="currently", field="items.one.title")
  */
 export function useLiveOverride(
   locale: Locale,
@@ -69,8 +72,10 @@ export function useLiveOverride(
   if (!overrides) return null;
   const localeDoc = overrides[locale];
   if (!localeDoc) return null;
-  // path looks like "hero.subtitle" or "manifesto.body"
-  const [section, field] = path.split('.');
+  const dotIdx = path.indexOf('.');
+  if (dotIdx === -1) return null;
+  const section = path.slice(0, dotIdx);
+  const field = path.slice(dotIdx + 1);
   if (!section || !field) return null;
   const sec = localeDoc[section as keyof typeof localeDoc];
   if (!sec || typeof sec !== 'object') return null;
